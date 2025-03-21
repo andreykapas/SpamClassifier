@@ -68,30 +68,32 @@ def compute_cost(A2, Y):
 
 def backward_propagation(parameters, cache, X, Y):
     """
-    Implements the backward propagation for a 2-layer neural network.
-
-    Arguments:
-        parameters -- dictionary containing parameters (W1, b1, W2, b2)
-        cache -- dictionary containing "Z1", "A1", "Z2", and "A2"
-        X -- input data of shape (n_x, m)
-        Y -- true "label" vector of shape (1, m)
-
-    Returns:
-        grads -- dictionary containing gradients of parameters (dW1, db1, dW2, db2)
+    Implement the backward propagation.
     """
-    m = X.shape[1]
+    # Retrieve each parameter from the dictionary "parameters"
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
     W2 = parameters["W2"]
+    b2 = parameters["b2"]
+
+    # Retrieve each cache from the dictionary "cache"
     A1 = cache["A1"]
     A2 = cache["A2"]
+    Z1 = cache["Z1"]
+    Z2 = cache["Z2"]
 
+    m = X.shape[1]
+
+    # Backward propagation: calculate dW1, db1, dW2, db2
     dZ2 = A2 - Y
-    dW2 = np.dot(dZ2, A1.T) / m
-    db2 = np.sum(dZ2, axis=1, keepdims=True) / m
-    dZ1 = np.dot(W2.T, dZ2) * relu_derivative(A1)
-    dW1 = np.dot(dZ1, X.T) / m
-    db1 = np.sum(dZ1, axis=1, keepdims=True) / m
+    dW2 = (1 / m) * np.dot(dZ2, A1.T)
+    db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
+    dZ1 = np.dot(W2.T, dZ2) * relu_derivative(Z1, cache)
+    dW1 = (1 / m) * np.dot(dZ1, X.T)
+    db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
 
     grads = {"dW1": dW1, "db1": db1, "dW2": dW2, "db2": db2}
+
     return grads
 
 def update_parameters(parameters, grads, learning_rate=0.01):

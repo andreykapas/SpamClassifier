@@ -12,10 +12,13 @@ def relu(Z):
     return A, cache
 
 
-def relu_derivative(dA, cache):
-    Z = cache
-    dZ = np.array(dA, copy=True)
+def relu_derivative(Z, cache):
+    """
+    Implement the derivative of the ReLU function.
+    """
+    dZ = np.array(Z, copy=True)  # just converting Z to a correct object.
     dZ[Z <= 0] = 0
+    dZ[Z > 0] = 1
     return dZ
 
 
